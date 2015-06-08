@@ -9,9 +9,9 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '2.0.0';
+    var _version = '0.1.1';
     var _context = this;
-    this.jsCode = 'javascript:var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
+    this.jsCode = 'javascript:/* Created With FormFiller v'+_version+' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
     this.loadForm = function () {
         _loadJQuery();
@@ -26,8 +26,7 @@ function FormFiller() {
     };
 
     this.doLoadForm = function () {
-        console.log('doLoadForm!');
-        var html = '<div id="formfiller"> <section style="position:fixed;top:20%;left:0;right:0;z-index:9999;width:75%;margin:0 auto;padding:40px;background-color:#fff;font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif"> <h1 style="margin:0 0 18px;font-size:32px">Form Filler</h1> <input style="margin-bottom:18px"> <input type="button" value="Save" onclick="javascript:formfiller.save();return false;"> <p style="margin:0"> Click and drag this link to the bookmarks bar: <a id="bookmarklet">My bookmarklet</a> </p><a href="javascript:$(\'#formfiller\').remove()" style=position:absolute;top:0;right:0;font-size:32px;padding:10px;line-height:.55;color:#aaa;text-decoration:none>&times;</a> </section> <div style=position:absolute;top:0;right:0;bottom:0;left:0;z-index:9998;background-color:rgba(0,0,0,.25)></div></div>';
+        var html = '<div id="formfiller"> <section style="position:fixed;top:20%;left:0;right:0;z-index:9999;width:40%;margin:0 auto;padding:40px;background-color:#fff;font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif"> <h1 style="margin:0 0 18px;font-size:32px">Form Filler v'+_version+'</h1> <div id="formfiller-formwrapper"><input id="formfiller-bookmarkletname" style="margin-bottom:18px" value="'+document.title+'"> <input type="button" value="Save" onclick="javascript:formfiller.save();return false;"></div> <p style="margin:0;display:none"> Click and drag this link to the bookmarks bar: <a id="bookmarklet">My bookmarklet</a> </p><a href="javascript:$(\'#formfiller\').remove()" style=position:absolute;top:0;right:0;font-size:32px;padding:10px;line-height:.55;color:#aaa;text-decoration:none>&times;</a> </section> <div style=position:absolute;top:0;right:0;bottom:0;left:0;z-index:9998;background-color:rgba(0,0,0,.25)></div></div>';
         $('body').append(html);
     };
     
@@ -37,18 +36,18 @@ function FormFiller() {
                 var attrName = $(this).attr('name');
                 var attrId = $(this).attr('id');
 
-                if((attrName.indexOf('[]') >= 0) || ($(this).attr('type') === 'radio')){
+                if((attrName.indexOf('[]') >= 0) || ($.inArray($(this).attr('type'), ['radio', 'checkbox']))){
                     // Handle checkboxes and radio buttons
-                    //formfiller.jsCode += '$("#' + attrId + '").prop("checked", true).change();';
                     formfiller.jsCode += 'i("'+attrId+'").checked=true;';
                 } else {
                     // Set field value
-                    //formfiller.jsCode += '$("*[name=' + attrName + ']").val("' + $(this).val() + '").change();';
                     formfiller.jsCode += 'n("'+attrName+'")[0].value="'+$(this).val()+'";';
                 }
             }
         });
-        $('#bookmarklet').attr('href', this.jsCode + 'void(0);');
+        this.jsCode += 'console.log("FormFiller: Form Repopulated.");';
+        $('#bookmarklet').attr('href', this.jsCode + 'void(0);').html($('#formfiller-bookmarkletname').val()).parent('p').show();
+        $('#formfiller-formwrapper').hide();
     };
 
 }
@@ -66,7 +65,6 @@ function Loader() {
 
     var TYPE = {
         SCRIPT: 'script'
-        , STYLE: 'link'
     };
 
     var _fileLoaded = false;
@@ -77,41 +75,17 @@ function Loader() {
         _callback = callback;
         _context = context;
         _appendNewElementToBody(
-                TYPE.SCRIPT
-                , {
-                    src: url
-                    , type: 'text/javascript'
-                }
-        );
-        _cleanup();
-    };
-
-    this.style = function (url) {
-        _appendNewElementToHead(
-                TYPE.STYLE
-                , {
-                    href: url
-                    , rel: 'stylesheet'
-                    , type: 'text/css'
-                }
+            TYPE.SCRIPT
+            , {
+                src: url
+                , type: 'text/javascript'
+            }
         );
         _cleanup();
     };
 
     var _appendNewElementToBody = function (type, attrs) {
-        _appendToBody(_createElement(type, attrs));
-    };
-
-    var _appendToBody = function (element) {
-        _getFirstElementByTagName('body').appendChild(element);
-    };
-
-    var _appendNewElementToHead = function (type, attrs) {
-        _appendToHead(_createElement(type, attrs));
-    };
-
-    var _appendToHead = function (element) {
-        _getFirstElementByTagName('head').appendChild(element);
+        _getFirstElementByTagName('body').appendChild(_createElement(type, attrs));
     };
 
     var _getFirstElementByTagName = function (name) {
