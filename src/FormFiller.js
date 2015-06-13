@@ -36,7 +36,7 @@ function FormFiller() {
                 var attrName = jQuery(this).attr('name');
                 var attrId = jQuery(this).attr('id');
 
-                if((attrName.indexOf('[]') >= 0) || (jQuery.inArray(jQuery(this).attr('type'), ['radio', 'checkbox']))){
+                if((attrName.indexOf('[]') >= 0) || (jQuery.inArray(jQuery(this).attr('type'), ['radio', 'checkbox']) >= 0)){
                     // Handle checkboxes and radio buttons
                     formfiller.jsCode += 'i("'+attrId+'").checked=true;i("'+attrId+'").dispatchEvent(e);';
                 } else {
