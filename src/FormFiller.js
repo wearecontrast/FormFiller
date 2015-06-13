@@ -9,7 +9,7 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.1';
+    var _version = '0.1.2';
     var _context = this;
     this.jsCode = 'javascript:/* Created With FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
