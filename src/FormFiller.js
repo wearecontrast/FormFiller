@@ -11,7 +11,7 @@ function FormFiller() {
 
     var _version = '0.1.1';
     var _context = this;
-    this.jsCode = 'javascript:/* Created With FormFiller v'+_version+' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
+    this.jsCode = 'javascript:/* Created With FormFiller v'+_version+' */var d=document, e=new Event();function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
     this.loadForm = function () {
         _loadJQuery();
@@ -38,10 +38,10 @@ function FormFiller() {
 
                 if((attrName.indexOf('[]') >= 0) || (jQuery.inArray(jQuery(this).attr('type'), ['radio', 'checkbox']))){
                     // Handle checkboxes and radio buttons
-                    formfiller.jsCode += 'i("'+attrId+'").checked=true;';
+                    formfiller.jsCode += 'i("'+attrId+'").checked=true;i("'+attrId+'").dispatchEvent(e);';
                 } else {
                     // Set field value
-                    formfiller.jsCode += 'n("'+attrName+'")[0].value="'+jQuery(this).val()+'";';
+                    formfiller.jsCode += 'n("'+attrName+'")[0].value="'+jQuery(this).val()+'";n("'+attrName+'")[0].dispatchEvent(e);';
                 }
             }
         });
