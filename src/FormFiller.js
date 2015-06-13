@@ -21,7 +21,7 @@ function FormFiller() {
         if (typeof jQuery === 'undefined') {
             new Loader().script('//code.jquery.com/jquery-1.11.1.min.js', function(context){context.doLoadForm();}, _context);
         } else {
-            this.doLoadForm();
+            _context.doLoadForm();
         }
     };
 
