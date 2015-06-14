@@ -9,7 +9,7 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.3';
+    var _version = '0.1.4';
     var _context = this;
     this.jsCode = 'javascript:/* Created With FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
@@ -43,7 +43,7 @@ function FormFiller() {
                     formfiller.jsCode += 'i("'+attrId+'").checked=true;i("'+attrId+'").dispatchEvent(e);';
                 } else {
                     // Set field value
-                    formfiller.jsCode += 'n("'+attrName+'")[0].value="'+jQuery(this).val()+'";n("'+attrName+'")[0].dispatchEvent(e);';
+                    formfiller.jsCode += 'n("'+attrName+'")[0].value="'+jQuery(this).val().replace(/"/g, '\\"')+'";n("'+attrName+'")[0].dispatchEvent(e);';
                 }
             }
         });
