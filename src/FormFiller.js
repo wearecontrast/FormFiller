@@ -35,10 +35,10 @@ function FormFiller() {
     this.save = function() {
         jQuery('form input:not(:hidden,:radio,:checkbox,:submit), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function(){
             if(_hasName(this)){
-                if(_isRadioOrCheckbox(element)){
-                    formfiller.jsCode += 'i("'+_getId(element)+'").checked=true;i("'+_getId(element)+'").dispatchEvent(e);';
+                if(_isRadioOrCheckbox(this)){
+                    formfiller.jsCode += 'i("'+_getId(this)+'").checked=true;i("'+_getId(this)+'").dispatchEvent(e);';
                 } else {
-                    formfiller.jsCode += 'n("'+_getName(element)+'")[0].value="'+jQuery(this).val().replace(/"/g, '\\"')+'";n("'+_getName(element)+'")[0].dispatchEvent(e);';
+                    formfiller.jsCode += 'n("'+_getName(this)+'")[0].value="'+jQuery(this).val().replace(/"/g, '\\"')+'";n("'+_getName(this)+'")[0].dispatchEvent(e);';
                 }
             }
         });
