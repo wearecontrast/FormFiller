@@ -11,7 +11,7 @@ function FormFiller() {
 
     var _version = '0.1.4';
     var _context = this;
-    this.jsCode = 'javascript:/* Created With FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
+    this.jsCode = 'javascript:/* FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
     this.loadForm = function () {
         _loadJQuery();
@@ -26,7 +26,7 @@ function FormFiller() {
     };
 
     this.doLoadForm = function () {
-        if(jQuery('div#formfiller').length == 0){
+        if(jQuery('div#formfiller').length === 0){
             var html = '<div id="formfiller"> <section style="position:fixed;top:20%;left:0;right:0;z-index:9999;width:40%;margin:0 auto;padding:40px;background-color:#fff;font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif"> <h1 style="margin:0 0 18px;font-size:32px">Form Filler v'+_version+'</h1> <div id="formfiller-formwrapper"><input id="formfiller-bookmarkletname" style="margin-bottom:18px" value="'+document.title+'"> <input type="button" value="Save" onclick="javascript:formfiller.save();return false;"></div> <p style="margin:0;display:none"> Click and drag this link to the bookmarks bar: <a id="bookmarklet">My bookmarklet</a> </p><a href="javascript:$(\'#formfiller\').remove()" style=position:absolute;top:0;right:0;font-size:32px;padding:10px;line-height:.55;color:#aaa;text-decoration:none>&times;</a> </section> <div style=position:fixed;top:0;right:0;bottom:0;left:0;z-index:9998;background-color:rgba(0,0,0,.25)></div></div>';
             jQuery('body').append(html);
         }
@@ -34,22 +34,40 @@ function FormFiller() {
     
     this.save = function() {
         jQuery('form input:not(:hidden,:radio,:checkbox,:submit), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function(){
-            if(jQuery(this).attr('name') !== undefined){
-                var attrName = jQuery(this).attr('name');
-                var attrId = jQuery(this).attr('id');
-
-                if((attrName.indexOf('[]') >= 0) || (jQuery.inArray(jQuery(this).attr('type'), ['radio', 'checkbox']) >= 0)){
-                    // Handle checkboxes and radio buttons
-                    formfiller.jsCode += 'i("'+attrId+'").checked=true;i("'+attrId+'").dispatchEvent(e);';
+            if(_hasName(this)){
+                if(_isRadioOrCheckbox(element)){
+                    formfiller.jsCode += 'i("'+_getId(element)+'").checked=true;i("'+_getId(element)+'").dispatchEvent(e);';
                 } else {
-                    // Set field value
-                    formfiller.jsCode += 'n("'+attrName+'")[0].value="'+jQuery(this).val().replace(/"/g, '\\"')+'";n("'+attrName+'")[0].dispatchEvent(e);';
+                    formfiller.jsCode += 'n("'+_getName(element)+'")[0].value="'+jQuery(this).val().replace(/"/g, '\\"')+'";n("'+_getName(element)+'")[0].dispatchEvent(e);';
                 }
             }
         });
-        this.jsCode += 'console.log("FormFiller: Form Repopulated.");';
         jQuery('#bookmarklet').attr('href', this.jsCode + 'void(0);').html(jQuery('#formfiller-bookmarkletname').val()).parent('p').show();
         jQuery('#formfiller-formwrapper').hide();
+    };
+    
+    var _hasName = function(element){
+        return (_getName(element) !== undefined);
+    };
+    
+    var _getName = function(element){
+        return jQuery(element).attr('name');
+    };
+    
+    var _isRadioOrCheckbox = function(element){
+        return (_nameHasArray(element)) || (_isType(element, ['radio', 'checkbox'])))
+    };
+    
+    var _nameHasArray = function(element){
+        return (_getName(element).indexOf('[]') >= 0)
+    };
+    
+    var _isType = function(element, types){
+        return (jQuery.inArray(jQuery(element).attr('type'), types) >= 0);
+    };
+    
+    var _getId = function(element){
+        return jQuery(element).attr('id');
     };
 
 }
