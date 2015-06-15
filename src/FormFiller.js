@@ -9,7 +9,7 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.4';
+    var _version = '0.1.5';
     var _context = this;
     this.jsCode = 'javascript:/* FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
@@ -55,7 +55,7 @@ function FormFiller() {
     };
     
     var _isRadioOrCheckbox = function(element){
-        return (_nameHasArray(element)) || (_isType(element, ['radio', 'checkbox'])))
+        return ((_nameHasArray(element)) || (_isType(element, ['radio', 'checkbox'])))
     };
     
     var _nameHasArray = function(element){
