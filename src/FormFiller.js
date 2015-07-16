@@ -9,7 +9,7 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.5';
+    var _version = '0.1.6';
     var _context = this;
     this.jsCode = 'javascript:/* FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
@@ -33,7 +33,7 @@ function FormFiller() {
     };
     
     this.save = function() {
-        jQuery('form input:not(:hidden,:radio,:checkbox,:submit), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function(){
+        jQuery('form input:not(:hidden,:radio,:checkbox,:submit,:file), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function(){
             if(_hasName(this)){
                 if(_isRadioOrCheckbox(this)){
                     formfiller.jsCode += 'i("'+_getId(this)+'").checked=true;i("'+_getId(this)+'").dispatchEvent(e);';
