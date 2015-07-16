@@ -9,9 +9,9 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.6';
+    var _version = '0.1.7';
     var _context = this;
-    this.jsCode = 'javascript:/* FormFiller v'+_version+' */var d=document, e=new Event(\'change\');function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
+    this.jsCode = 'javascript:/* FormFiller v'+_version+' */var d=document, e=new Event(\'change\'),z;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
     
     this.loadForm = function () {
         _loadJQuery();
@@ -34,12 +34,15 @@ function FormFiller() {
     
     this.save = function() {
         jQuery('form input:not(:hidden,:radio,:checkbox,:submit,:file), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function(){
-            if(_hasName(this)){
-                if(_isRadioOrCheckbox(this)){
-                    formfiller.jsCode += 'i("'+_getId(this)+'").checked=true;i("'+_getId(this)+'").dispatchEvent(e);';
+            if(_hasName(this) || _hasId(this)){
+                if(_hasName(this) && _hasId(this) && _isRadioOrCheckbox(this)){
+                    formfiller.jsCode += 'z=i("'+_getId(this)+'");z.checked=true;';
+                } else if(_hasId(this)){
+                    formfiller.jsCode += 'z=i("'+_getId(this)+'");z.value="'+_getValue(this)+'";'
                 } else {
-                    formfiller.jsCode += 'n("'+_getName(this)+'")[0].value="'+jQuery(this).val().replace(/"/g, '\\"')+'";n("'+_getName(this)+'")[0].dispatchEvent(e);';
+                    formfiller.jsCode += 'z=n("'+_getName(this)+'")[0];z.value="'+_getValue(this)+'";';
                 }
+                formfiller.jsCode += 'z.dispatchEvent(e);';
             }
         });
         jQuery('#bookmarklet').attr('href', this.jsCode + 'void(0);').html(jQuery('#formfiller-bookmarkletname').val()).parent('p').show();
@@ -54,6 +57,14 @@ function FormFiller() {
         return jQuery(element).attr('name');
     };
     
+    var _hasId = function(element){
+        return (_getId(element) !== undefined);
+    };
+    
+    var _getId = function(element){
+        return jQuery(element).attr('id');
+    };
+    
     var _isRadioOrCheckbox = function(element){
         return ((_nameHasArray(element)) || (_isType(element, ['radio', 'checkbox'])))
     };
@@ -66,8 +77,8 @@ function FormFiller() {
         return (jQuery.inArray(jQuery(element).attr('type'), types) >= 0);
     };
     
-    var _getId = function(element){
-        return jQuery(element).attr('id');
+    var _getValue = function(element){
+        return jQuery(element).val().replace(/"/g, '\\"');
     };
 
 }
