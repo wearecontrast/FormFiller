@@ -9,38 +9,40 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.7';
+    var _version = '0.1.8';
     var _context = this;
-    this.jsCode = 'javascript:/* FormFiller v'+_version+' */var d=document, e=new Event(\'change\'),z;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
-    
+    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document, e=new Event(\'change\'),z;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
+
     this.loadForm = function () {
         _loadJQuery();
     };
 
     var _loadJQuery = function () {
         if (typeof jQuery === 'undefined') {
-            new Loader().script('//code.jquery.com/jquery-1.11.1.min.js', function(context){context.doLoadForm();}, _context);
+            new Loader().script('//code.jquery.com/jquery-1.11.1.min.js', function (context) {
+                context.doLoadForm();
+            }, _context);
         } else {
             _context.doLoadForm();
         }
     };
 
     this.doLoadForm = function () {
-        if(jQuery('div#formfiller').length === 0){
-            var html = '<div id="formfiller"> <section style="position:fixed;top:20%;left:0;right:0;z-index:9999;width:40%;margin:0 auto;padding:40px;background-color:#fff;font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif"> <h1 style="margin:0 0 18px;font-size:32px">Form Filler v'+_version+'</h1> <div id="formfiller-formwrapper"><input id="formfiller-bookmarkletname" style="margin-bottom:18px" value="'+document.title+'"> <input type="button" value="Save" onclick="javascript:formfiller.save();return false;"></div> <p style="margin:0;display:none"> Click and drag this link to the bookmarks bar: <a id="bookmarklet">My bookmarklet</a> </p><a href="javascript:$(\'#formfiller\').remove()" style=position:absolute;top:0;right:0;font-size:32px;padding:10px;line-height:.55;color:#aaa;text-decoration:none>&times;</a> </section> <div style=position:fixed;top:0;right:0;bottom:0;left:0;z-index:9998;background-color:rgba(0,0,0,.25)></div></div>';
+        if (jQuery('div#formfiller').length === 0) {
+            var html = '<div id="formfiller"> <section style="position:fixed;top:20%;left:0;right:0;z-index:9999;width:40%;margin:0 auto;padding:40px;background-color:#fff;font-family:\'Helvetica Neue\',Helvetica,Arial,sans-serif"> <h1 style="margin:0 0 18px;font-size:32px">Form Filler v' + _version + '</h1> <div id="formfiller-formwrapper"><input id="formfiller-bookmarkletname" style="margin-bottom:18px" value="' + document.title + '"> <input type="button" value="Save" onclick="javascript:formfiller.save();return false;"></div> <p style="margin:0;display:none"> Click and drag this link to the bookmarks bar: <a id="bookmarklet">My bookmarklet</a> </p><a href="javascript:$(\'#formfiller\').remove()" style=position:absolute;top:0;right:0;font-size:32px;padding:10px;line-height:.55;color:#aaa;text-decoration:none>&times;</a> </section> <div style=position:fixed;top:0;right:0;bottom:0;left:0;z-index:9998;background-color:rgba(0,0,0,.25)></div></div>';
             jQuery('body').append(html);
         }
     };
-    
-    this.save = function() {
-        jQuery('form input:not(:hidden,:radio,:checkbox,:submit,:file), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function(){
-            if(_hasName(this) || _hasId(this)){
-                if(_hasName(this) && _hasId(this) && _isRadioOrCheckbox(this)){
-                    formfiller.jsCode += 'z=i("'+_getId(this)+'");z.checked=true;';
-                } else if(_hasId(this)){
-                    formfiller.jsCode += 'z=i("'+_getId(this)+'");z.value="'+_getValue(this)+'";'
+
+    this.save = function () {
+        jQuery('form input:not(:hidden,:radio,:checkbox,:submit,:file), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function () {
+            if (_hasName(this) || _hasId(this)) {
+                if (_hasName(this) && _hasId(this) && _isRadioOrCheckbox(this)) {
+                    formfiller.jsCode += 'z=i("' + _getId(this) + '");z.checked=true;';
+                } else if (_hasId(this)) {
+                    formfiller.jsCode += 'z=i("' + _getId(this) + '");z.value="' + _getValue(this) + '";'
                 } else {
-                    formfiller.jsCode += 'z=n("'+_getName(this)+'")[0];z.value="'+_getValue(this)+'";';
+                    formfiller.jsCode += 'z=n("' + _getName(this) + '")[0];z.value="' + _getValue(this) + '";';
                 }
                 formfiller.jsCode += 'z.dispatchEvent(e);';
             }
@@ -48,36 +50,36 @@ function FormFiller() {
         jQuery('#bookmarklet').attr('href', this.jsCode + 'void(0);').html(jQuery('#formfiller-bookmarkletname').val()).parent('p').show();
         jQuery('#formfiller-formwrapper').hide();
     };
-    
-    var _hasName = function(element){
+
+    var _hasName = function (element) {
         return (_getName(element) !== undefined);
     };
-    
-    var _getName = function(element){
+
+    var _getName = function (element) {
         return jQuery(element).attr('name');
     };
-    
-    var _hasId = function(element){
+
+    var _hasId = function (element) {
         return (_getId(element) !== undefined);
     };
-    
-    var _getId = function(element){
+
+    var _getId = function (element) {
         return jQuery(element).attr('id');
     };
-    
-    var _isRadioOrCheckbox = function(element){
+
+    var _isRadioOrCheckbox = function (element) {
         return ((_nameHasArray(element)) || (_isType(element, ['radio', 'checkbox'])))
     };
-    
-    var _nameHasArray = function(element){
+
+    var _nameHasArray = function (element) {
         return (_getName(element).indexOf('[]') >= 0)
     };
-    
-    var _isType = function(element, types){
+
+    var _isType = function (element, types) {
         return (jQuery.inArray(jQuery(element).attr('type'), types) >= 0);
     };
-    
-    var _getValue = function(element){
+
+    var _getValue = function (element) {
         var value = jQuery(element).val();
         return (value === null) ? '' : value.replace(/"/g, '\\"');
     };
@@ -107,11 +109,11 @@ function Loader() {
         _callback = callback;
         _context = context;
         _appendNewElementToBody(
-            TYPE.SCRIPT
-            , {
-                src: url
-                , type: 'text/javascript'
-            }
+                TYPE.SCRIPT
+                , {
+                    src: url
+                    , type: 'text/javascript'
+                }
         );
         _cleanup();
     };
