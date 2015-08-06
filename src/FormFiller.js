@@ -9,9 +9,9 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.8';
+    var _version = '0.1.9';
     var _context = this;
-    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document, e=new Event(\'change\'),z;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)}';
+    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)[0]}function e(a){a.dispatchEvent(new Event(\'change\'))}function v(a,v){a.value=v;e(a)}function c(a){a.checked=true;e(a)}';
 
     this.loadForm = function () {
         _loadJQuery();
@@ -36,19 +36,22 @@ function FormFiller() {
 
     this.save = function () {
         jQuery('form input:not(:hidden,:radio,:checkbox,:submit,:file), form textarea, form select, form input[type="radio"]:checked, form input[type="checkbox"]:checked').each(function () {
-            if (_hasName(this) || _hasId(this)) {
+            if (_isVisible(this) && (_hasName(this) || _hasId(this))) {
                 if (_hasName(this) && _hasId(this) && _isRadioOrCheckbox(this)) {
-                    formfiller.jsCode += 'z=i("' + _getId(this) + '");z.checked=true;';
+                    formfiller.jsCode += 'c(i("' + _getId(this) + '"));';
                 } else if (_hasId(this)) {
-                    formfiller.jsCode += 'z=i("' + _getId(this) + '");z.value="' + _getValue(this) + '";'
+                    formfiller.jsCode += 'v(i("' + _getId(this) + '"),"' + _getValue(this) + '");'
                 } else {
-                    formfiller.jsCode += 'z=n("' + _getName(this) + '")[0];z.value="' + _getValue(this) + '";';
+                    formfiller.jsCode += 'v(n("' + _getName(this) + '"),"' + _getValue(this) + '");';
                 }
-                formfiller.jsCode += 'z.dispatchEvent(e);';
             }
         });
         jQuery('#bookmarklet').attr('href', this.jsCode + 'void(0);').html(jQuery('#formfiller-bookmarkletname').val()).parent('p').show();
         jQuery('#formfiller-formwrapper').hide();
+    };
+    
+    var _isVisiable = function(element) {
+        return jQuery(element).is(':visible');
     };
 
     var _hasName = function (element) {
