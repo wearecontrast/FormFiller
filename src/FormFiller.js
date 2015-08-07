@@ -9,10 +9,9 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.11';
+    var _version = '0.1.12';
     var _context = this;
-    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)[0]}function e(a){a.dispatchEvent(new Event(\'change\'))}function v(a,v){a.value=v;e(a)}function c(a){a.checked=true;e(a)}';
-
+    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)[0]}function e(a){t=\'change\';if(window.navigator.userAgent.match(/Trident|MSIE\s/g)!=null){x=d.createEvent(\'Events\');x.initEvent(t,1,0);}else{x=new Event(t);}a.dispatchEvent(x);}function v(a,v){a.value=v;e(a)}function c(a){a.checked=true;e(a)}';
     this.loadForm = function () {
         _loadJQuery();
     };
