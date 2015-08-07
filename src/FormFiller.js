@@ -9,7 +9,7 @@ formfiller.loadForm();
  */
 function FormFiller() {
 
-    var _version = '0.1.10';
+    var _version = '0.1.11';
     var _context = this;
     this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)[0]}function e(a){a.dispatchEvent(new Event(\'change\'))}function v(a,v){a.value=v;e(a)}function c(a){a.checked=true;e(a)}';
 
@@ -50,7 +50,7 @@ function FormFiller() {
         jQuery('#formfiller-formwrapper').hide();
     };
     
-    var _isVisiable = function(element) {
+    var _isVisible = function(element) {
         return jQuery(element).is(':visible');
     };
 
