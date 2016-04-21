@@ -24,10 +24,17 @@ function FormFiller() {
     var _context = this;
     
     /**
+     * The form data
+     * @type {Object}
+     * @private
+     */
+    var _formData = {};
+    
+    /**
      * Initial Bookmarklet Code
      * @type {string}
      */
-    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)[0]}function e(a){t=\'change\';if(window.navigator.userAgent.match(/Trident|MSIE\s/g)!=null){x=d.createEvent(\'Events\');x.initEvent(t,1,0);}else{x=new Event(t);}a.dispatchEvent(x);}function v(a,v){a.value=v;e(a)}function c(a){a.checked=true;e(a)}';
+    this.jsCode = 'javascript:/* FormFiller v' + _version + ' */var d=document;function i(a){return d.getElementById(a)}function n(a){return d.getElementsByName(a)[0]}function e(a){t=\'change\';if(window.navigator.userAgent.match(/Trident|MSIE\s/g)!=null){x=d.createEvent(\'Events\');x.initEvent(t,1,0);}else{x=new Event(t);}a.dispatchEvent(x);}function v(a,v){a.value=v;e(a)}function c(a){a.checked=true;e(a)}function r(l){return (Math.random()+1).toString(36).substring(l)}';
     
     /**
      * Load Form
@@ -44,7 +51,7 @@ function FormFiller() {
      */
     var _loadJQuery = function () {
         if (typeof jQuery === 'undefined') {
-            new Loader().script('//code.jquery.com/jquery-1.11.1.min.js', function (context) {
+            new FormFiller_Loader().script('//code.jquery.com/jquery-1.11.1.min.js', function (context) {
                 context.doLoadForm();
             }, _context);
         } else {
@@ -178,14 +185,14 @@ function FormFiller() {
 }
 
 /**
- * Loader
+ * FormFiller_Loader
  * 
  * Class for loading external files
  * Supported tags:
  *   - script
- * @returns {Loader}
+ * @returns {FormFiller_Loader}
  */
-function Loader() {
+function FormFiller_Loader() {
 
     /**
      * The supported element types
@@ -293,4 +300,70 @@ function Loader() {
         _fileLoaded = false;
     };
 
+}
+
+function FormFiller_Field() {
+    var name = null;
+    var value = null;
+    var children = [];
+    var modifier = null;
+    
+    this.setName = function(n){
+        name = n;
+        return this;
+    };
+    
+    this.setValue = function(v){
+        value = v;
+        return this;
+    };
+    
+    this.addChild = function(c){
+        children.push(c);
+        return this;
+    };
+    
+    this.addChildren = function(c){
+        for(var i = 0; i < c.length; i++){
+            this.addChild(c[i]);
+        }
+        return this;
+    }
+    
+    this.getName = function(){
+        return name;
+    };
+    
+    this.getValue = function(){
+        if(hasModifier()){
+            return modifier;
+        } else {
+            return value;
+        }
+    };
+    
+    this.hasModifier = function(){
+        return (modifier != null);
+    };
+    
+    this.getChildren = function(){
+        return children;
+    };
+    
+    this.hasChildren = function(){
+        return (children.length > 0);
+    };
+    
+}
+
+function FormFiller_Field_Modifier(type, options) {
+    this.value = null;
+    
+    var init = function(type, options){
+        switch(type){
+            case 'RandomString': this.value = 'r('+options.length+')'; break;
+        }
+    };
+    
+    init(type, options);
 }
